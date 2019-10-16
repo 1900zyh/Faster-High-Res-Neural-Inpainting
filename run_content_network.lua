@@ -26,9 +26,16 @@ end
 modelG=util.load(opt.model_file,opt.gpu)
 modelG:evaluate()
 
-fnames = paths.dir('examples')
-orig_size = #fnames
-fnames = { unpack(fnames, 3, orig_size)}
+all_fnames = paths.dir('examples')
+fnames = {}
+for i=1,#all_fnames do
+  if string.match(all_fnames[i], "fake") or string.match(all_fnames[i], "demo") then ;
+  else 
+    if all_fnames[i] == '.' or all_fnames[i] == '..' then ;
+    else
+      table.insert(fnames, all_fnames[i])
+    end
+  end  
 print(string.format('testing %d images ...', #fnames))
 
 for i=1,#fnames do
