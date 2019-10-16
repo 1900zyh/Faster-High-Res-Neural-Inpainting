@@ -43,3 +43,4 @@ luac.out
 *.t7
 *.caffemodel
 .DS_Store
+examples/*

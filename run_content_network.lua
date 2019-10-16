@@ -27,24 +27,25 @@ modelG=util.load(opt.model_file,opt.gpu)
 modelG:evaluate()
 
 fnames = paths.dir('examples')
-fnames = { unpack(fnames, 3, #fnames)}
+orig_size = #fnames
+fnames = { unpack(fnames, 3, orig_size)}
 print(string.format('testing %d images ...', #fnames))
 
 for i=1,#fnames do
-
+  print(i, fnames[i])
   local real=torch.Tensor(1,3,512,512)
   local real_ctx = torch.Tensor(1,3,128,128)
   local fake2 = torch.Tensor(3,256,256)
   local output=torch.Tensor(3,512,512)
-  real[0]=loadImage(string.format('examples/%s',fnames[i]),512)
-  real_ctx[0]:copy(image.scale(real[i],128,128))
-  real_ctx[{0,{1},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred}}] = 2*117/255.0 - 1.0
-  real_ctx[{0,{2},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred}}] = 2*104/255.0 - 1.0
-  real_ctx[{0,{3},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred}}] = 2*123/255.0 - 1.0
+  real[1]=loadImage(string.format('examples/%s',fnames[i]),512)
+  real_ctx[1]:copy(image.scale(real[1],128,128))
+  real_ctx[{1,{1},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred}}] = 2*117/255.0 - 1.0
+  real_ctx[{1,{2},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred}}] = 2*104/255.0 - 1.0
+  real_ctx[{1,{3},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred},{1 + opt.fineSize/4 + opt.overlapPred, opt.fineSize/2 + opt.fineSize/4 - opt.overlapPred}}] = 2*123/255.0 - 1.0
   fake = modelG:forward(real_ctx)
 
-  fake2:copy(image.scale(fake[0],256,256))
-  output:copy(real[0])
+  fake2:copy(image.scale(fake[1],256,256))
+  output:copy(real[1])
   output[{{},{145,368},{145,368}}]:copy(fake2[{{},{17, 240},{17, 240}}])
   output[output:gt(1)]=1
   output[output:lt(-1)]=-1
