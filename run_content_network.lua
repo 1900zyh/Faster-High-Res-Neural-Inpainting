@@ -36,6 +36,7 @@ for i=1,#all_fnames do
       table.insert(fnames, all_fnames[i])
     end
   end  
+end
 print(string.format('testing %d images ...', #fnames))
 
 for i=1,#fnames do
