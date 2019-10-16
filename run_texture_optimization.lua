@@ -31,9 +31,16 @@ require 'paths'
 -- gpu_chunck_size_2: Size of chuncks to split feature maps along the y dimension. This is to save memory when normalizing the matching score in mrf layers. Use large value if you have large gpu memory. As reference we use 16 for Titan X, and 2 for Geforce GT750M 2G.
 -- backend: Use 'cudnn' for CUDA-enabled GPUs or 'clnn' for OpenCL.
 
+all_fnames = paths.dir('examples/')
+fake_fnames = {}
+for i=1,#all_fnames do 
+  if string.match(all_fnames[i], "fake") then
+    table.insert(fake_fnames, all_fnames[i])
+  end
+end
 
-local list_params = {
-{'demo', 'fake_0001.png', 'input_0001.png',  'image', 512, 3, {100, 100, 100}, {21}, {1e-4, 1e-4}, {3, 3}, 1, 1, {2, 2}, {2, 2}, {0, 0}, {23}, 2e1, 1e-4, 'speed', 256, 16, 'cudnn'},
-}
-
-run_tests(require 'transfer_CNNMRF_wrapper', list_params)
+for i=1,#fake_fnames do 
+  local list_params = {
+  {'demo', fake_fnames[i], string.sub(fake_fnames[i], 6, #fake_fnames[i]),  'image', 512, 3, {100, 100, 100}, {21}, {1e-4, 1e-4}, {3, 3}, 1, 1, {2, 2}, {2, 2}, {0, 0}, {23}, 2e1, 1e-4, 'speed', 256, 16, 'cudnn'}}
+  run_tests(require 'transfer_CNNMRF_wrapper', list_params)
+end
