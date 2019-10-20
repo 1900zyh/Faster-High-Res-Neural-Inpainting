@@ -33,11 +33,22 @@ require 'paths'
 
 all_fnames = paths.dir('examples/')
 fake_fnames = {}
+
 for i=1,#all_fnames do 
-  if string.match(all_fnames[i], "fake") then
-    table.insert(fake_fnames, all_fnames[i])
+  if string.match(all_fnames[i], "fake") and not string.match(all_fnames[i], "demo") then
+    demo_name = string.format("examples/demo_%sTO%s.jpg", string.sub(all_fnames[i], 6, #all_fnames[i]), all_fnames[i])
+    if not path.exists(demo_name) then
+      table.insert(fake_fnames, all_fnames[i])
+    end
   end
 end
+
+print('generating textures for ', #fake_fnames)
+
+
+
+
+
 
 for i=1,#fake_fnames do 
   local list_params = {
